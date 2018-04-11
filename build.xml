@@ -1,0 +1,68 @@
+<project name="TestPhp" default="dist" basedir=".">
+    <!--
+ ==================== Properties ==================================== 
+-->
+    <property name="app.name"          value="TestPhp"/>
+    <property name="app.path"          value="/${app.name}"/>
+    <property name="doc.home"          value="${basedir}/doc"/>
+    <property name="source.home"       value="${basedir}/src"/>
+    
+    <property name="deploy.home"       value="${basedir}/deploy"/>
+    <property name="deploy.css"        value="${deploy.home}/css"/>
+    <property name="deploy.images"     value="${deploy.home}/images"/>
+    <property name="deploy.metainf"    value="${deploy.home}/META-INF"/>
+    <property name="deploy.pages"      value="${deploy.home}/pages"/>
+    <property name="deploy.scripts"    value="${deploy.home}/scripts"/>
+    <property name="deploy.webinf"     value="${deploy.home}/WEB-INF"/>
+    
+    <property name="dist.home"         value="${basedir}/dist"/>
+    <property name="web.home"          value="${basedir}/WebContent"/>
+    <property name="web.css"           value="${basedir}/WebContent/css"/>
+    <property name="web.images"        value="${basedir}/WebContent/images"/>
+    <property name="web.pages"         value="${basedir}/WebContent/pages"/>
+    <property name="web.scripts"       value="${basedir}/WebContent/scripts"/>
+    <!--
+ ==================== Copyfiles Target ================================== 
+-->
+    <target name="copyfiles">
+        <copy todir="${deploy.home}">
+            <fileset dir="${web.home}"/>
+        </copy>
+    </target>
+    <!--
+ ==================== Prepare Target ================================== 
+-->
+    <target name="prepare">
+        <mkdir dir="${deploy.home}"/>
+        <mkdir dir="${deploy.webinf}"/>
+    </target>
+    <!--
+ ==================== Clean Target ==================================== 
+-->
+    <target name="clean" description="Delete old build and dist directories">
+       <delete dir="${deploy.home}"/>
+        <delete dir="${dist.home}"/>
+    </target>
+    <!--
+ ==================== Dist Target ===================================== 
+-->
+    <target name="dist"
+            depends="clean,prepare,copyfiles,create_manifest"
+            description="Create binary distribution"
+     >
+        <mkdir dir="${dist.home}"/>
+        <jar jarfile="${dist.home}/${app.name}.war"
+             manifest="${deploy.home}/META-INF/MANIFEST.MF"
+             basedir="${deploy.home}"
+         />
+    </target>
+
+    <target name="create_manifest">
+        <manifest file="${deploy.home}/META-INF/MANIFEST.MF">
+            <attribute name="Manifest-Version" value="1.0}" />
+            <attribute name="Version" value="1.0}" />
+            <attribute name="Company" value="OCSA" />
+        </manifest>
+    </target>
+
+</project>
